@@ -76,9 +76,7 @@ def create_board():
 
 def check_user_move(board, piece, old_x, old_y, x, y):
 
-    # Create all combos with old board and then check it in terms of new board
-
-    def check_pawn():
+    def spot_taken():
         # Let's make sure there isn't a piece of the same color where said piece wants to move
         if piece > 0:
             if board[y][x] > 0:
@@ -86,6 +84,14 @@ def check_user_move(board, piece, old_x, old_y, x, y):
             else:
                 if board[y][x] < 0:
                     return False
+                
+        return True
+
+    # Create all combos with old board and then check it in terms of new board
+
+    def check_pawn():
+        if spot_taken() == False:
+            return False
 
         #  First let's check if it's moving left or right
         if (old_x + 1 == x and old_y == y) or (old_x - 1 == x and old_y == y):
@@ -109,14 +115,9 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         return False
 
     def check_knight():
-
-        # Let's make sure there isn't a piece of the same color where said piece wants to move
-        if piece > 0:
-            if board[y][x] > 0:
-                return False
-            else:
-                if board[y][x] < 0:
-                    return False
+        
+        if spot_taken() == False:
+            return False
                 
         # Check if the knight is moving 1 right/left and 2 up/down
         if (old_x - 1 == x or old_x + 1 == x) and (old_y + 2 == y or old_y - 2 == y):
@@ -131,39 +132,22 @@ def check_user_move(board, piece, old_x, old_y, x, y):
     def check_bishop():
 
         for i in range(1, 8):
-            if old_x + i == x and old_y + i == y:
 
-                if piece > 0:
-                    if board[y][x] > 0:
-                        return False
-                else:
-                    if board[y][x] < 0:
-                        return False
-    
+            if spot_taken() == False:
+                return False
+
+            if old_x + i == x and old_y + i == y:
                 return True
             
         return False
 
     def check_rook():
 
-        # Let's make sure there isn't a piece of the same color where said piece wants to move
-        if piece > 0:
-            if board[y][x] > 0:
-                return False
-            else:
-                if board[y][x] < 0:
-                    return False
+        if spot_taken() == False:
+            return False
 
         for i in range(1, 8):
             if old_x + i == x and old_y == y:
-
-                if piece > 0:
-                    if board[y][x] > 0:
-                        return False
-                else:
-                    if board[y][x] < 0:
-                        return False
-    
                 return True
             
         return False
@@ -175,16 +159,13 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         
         if check_rook == True:
             return True
+        
+        return False
 
     def check_king():
 
-        # Let's make sure there isn't a piece of the same color where said piece wants to move
-        if piece > 0:
-            if board[y][x] > 0:
-                return False
-            else:
-                if board[y][x] < 0:
-                    return False
+        if spot_taken() == False:
+            return False
 
         # We can simply copy some of the conditionals of our pawn method
         #  First let's check if it's moving left or right
