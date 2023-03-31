@@ -76,6 +76,8 @@ def create_board():
 
 def check_user_move(board, piece, old_x, old_y, x, y):
 
+    print(piece)
+
     def spot_taken():
         # Let's make sure there isn't a piece of the same color where said piece wants to move
         if piece > 0:
@@ -90,6 +92,8 @@ def check_user_move(board, piece, old_x, old_y, x, y):
     # Create all combos with old board and then check it in terms of new board
 
     def check_pawn():
+
+        print('here')
         if spot_taken() == False:
             return False
 
@@ -196,30 +200,70 @@ def check_user_move(board, piece, old_x, old_y, x, y):
             return False
     
 
+    # Now that our piece movement works, let's check if a piece of the other color is captured
+    # We want to not only return true BUT we want to return what that piece was & in turn it's point value
+
+    def is_captured():
+        if piece > 0:
+            if board[y][x] < 0:
+                return board[y][x]
+            else:
+                if board[y][x] < 0:
+
+                    # Here we're simply converting from neg. to pos. 
+                    # This is due to the fact that we use neg. and pos. to distiguish the color of pieices
+                    # But we only care about the point value now, so we want to return the POSITIVE point value
+
+                    return board[y][x]*-1 
+                
+        return False        
+
+
+
     # We use an index slice in order to make sure that the array isn't linked to the same memory adress
     new_board = board[:]    
 
     new_board[y][x] = piece
 
     if piece == 1: # pawn
-        check_pawn(board, new_board)
+        if check_pawn(board, new_board) == False:
+            return False
 
     elif piece == 3: # knight
-        check_knight(board, new_board)
+        if check_knight(board, new_board) == False:
+            return False
 
     elif piece == 3.5: # bishop
-        check_bishop(board, new_board)
+        if check_bishop(board, new_board) == False:
+            return False
     
     elif piece == 5: # rook
-        check_rook(board, new_board)
+        if check_rook(board, new_board) == False:
+            return False
 
     elif piece == 9: # queen
-        check_queen(board, new_board)
+        if check_queen(board, new_board) == False:
+            return False
 
     else:
-        check_king(board, new_board)
+        if check_king(board, new_board) == False:
+            return False
     
-    return True
-
     # Here let's check if that value of y,x has a piece (meaning it has to be of the other side)
     # We have to do something with that value
+
+    captured = is_captured()
+
+    # Here if there is no piece captured we can just return True or maybe 0??
+    if captured == False:
+        return True
+    
+    # if there is though, let's just return that value
+
+    else:
+        return captured
+    
+board = create_board()
+print(check_user_move(board, 1, 1, 1, 1, 2))
+
+#print(board[]) - debugging, not exactly working!
