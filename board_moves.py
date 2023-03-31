@@ -1,3 +1,17 @@
+'''
+
+Buggy parts to fix
+
+- fix spot_taken function
+- fix the easy IF statements (whether it is in bounds or not)
+- check every other peice 
+- also make sure that rook and bishop can't just IGNORE the pawn in front of it lol
+
+
+'''
+
+
+
 def create_board():
 
     # First, let's assign values to each piece and have those values be the pointer to the piece
@@ -74,9 +88,8 @@ def create_board():
 
     return board
 
-def check_user_move(board, piece, old_x, old_y, x, y):
+def check_user_move(board, piece, old_y, old_x, y, x):
 
-    print(piece)
 
     def spot_taken():
         # Let's make sure there isn't a piece of the same color where said piece wants to move
@@ -86,14 +99,13 @@ def check_user_move(board, piece, old_x, old_y, x, y):
             else:
                 if board[y][x] < 0:
                     return False
-                
+
         return True
 
     # Create all combos with old board and then check it in terms of new board
 
     def check_pawn():
 
-        print('here')
         if spot_taken() == False:
             return False
 
@@ -108,7 +120,7 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         # Now let's check for en passant
         if (old_x + 1 == x and old_y + 1 == y) or (old_x - 1 == x and old_y + 1 == y):
             # let's make sure a peice of the opposite color is on that position
-            if new_board[y][x]:
+            if board[y][x]:
                 if piece > 0:
                     if board[y][x] < 0:
                         return True
@@ -153,6 +165,9 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         for i in range(1, 8):
             if old_x + i == x and old_y == y:
                 return True
+
+            if old_x == x and old_y + i == y:
+                return True
             
         return False
 
@@ -183,7 +198,7 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         # Now let's check for diagonal movement
         if (old_x + 1 == x and old_y + 1 == y) or (old_x - 1 == x and old_y + 1 == y):
             return True
-
+    '''
     if not x <= 7 and not x >= 0:
         return False
 
@@ -198,7 +213,7 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         if board[y][x] <= 0:
 
             return False
-    
+    ''' 
 
     # Now that our piece movement works, let's check if a piece of the other color is captured
     # We want to not only return true BUT we want to return what that piece was & in turn it's point value
@@ -219,34 +234,28 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         return False        
 
 
-
-    # We use an index slice in order to make sure that the array isn't linked to the same memory adress
-    new_board = board[:]    
-
-    new_board[y][x] = piece
-
     if piece == 1: # pawn
-        if check_pawn(board, new_board) == False:
+        if check_pawn() == False:
             return False
 
     elif piece == 3: # knight
-        if check_knight(board, new_board) == False:
+        if check_knight() == False:
             return False
 
     elif piece == 3.5: # bishop
-        if check_bishop(board, new_board) == False:
+        if check_bishop() == False:
             return False
     
     elif piece == 5: # rook
-        if check_rook(board, new_board) == False:
+        if check_rook() == False:
             return False
 
     elif piece == 9: # queen
-        if check_queen(board, new_board) == False:
+        if check_queen() == False:
             return False
 
     else:
-        if check_king(board, new_board) == False:
+        if check_king() == False:
             return False
     
     # Here let's check if that value of y,x has a piece (meaning it has to be of the other side)
@@ -264,6 +273,12 @@ def check_user_move(board, piece, old_x, old_y, x, y):
         return captured
     
 board = create_board()
-print(check_user_move(board, 1, 1, 1, 1, 2))
+print(check_user_move(board, 5, 0, 7, 3, 8))
+print(board[0][7])
+
+
+# Just to make my life easy
+
+# def check_user_move(board, piece, old_x, old_y, x, y):
 
 #print(board[]) - debugging, not exactly working!
