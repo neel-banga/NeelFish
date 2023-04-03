@@ -3,7 +3,6 @@
 Buggy parts to fix
 
 - fix the easy IF statements (whether it is in bounds or not)
-- check every other peice       
 - also make sure that rook and bishop can't just IGNORE the pawn in front of it lol
 
 
@@ -106,7 +105,7 @@ def check_user_move(board, piece, old_y, old_x, y, x):
     def check_pawn():
 
         if spot_taken() == False:
-            return False
+            pt = False
 
         #  First let's check if it's moving left or right
         if (old_x + 1 == x and old_y == y) or (old_x - 1 == x and old_y == y):
@@ -116,7 +115,7 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         if (old_y + 1 == y and old_x == x) or (old_y - 1 == y and old_x == x):
             return True
         
-        # Now let's check for en passant
+        # Now let's check for takin a piece 
         if (old_x + 1 == x and old_y + 1 == y) or (old_x - 1 == x and old_y + 1 == y):
             # let's make sure a peice of the opposite color is on that position
             if board[y][x]:
@@ -181,12 +180,12 @@ def check_user_move(board, piece, old_y, old_x, y, x):
 
             # For up / down
 
-            if piece < 0:
-                if board[i][old_x] < 0:
+            if piece > 0:
+                if board[i][old_x] > 0:
                     y_movement = False
 
             else:
-                if board[i][old_x] > 0:
+                if board[i][old_x] < 0:
                     y_movement = False                
 
             print(y_movement)
@@ -301,7 +300,7 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         return captured
     
 board = create_board()
-print(check_user_move(board, 3, 1, 0, 2, 2))
+print(check_user_move(board, 5, 7, 0, 7, 1))
 print(board[0][1])
 
 
@@ -310,3 +309,20 @@ print(board[0][1])
 # def check_user_move(board, piece, old_x, old_y, x, y):
 
 #print(board[]) - debugging, not exactly working!
+
+# Pawn - WORKS! (maybe not diaganol)
+# KING - WORKS!
+# KNIGHT - WORKS!
+# ROOK - WORKS!
+
+''' 
+board = [
+    [5, 3, 3.5, 9, float('inf'), 3.5, 3, 5],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [-1, -1, -1, -1, -1, -1, -1, -1],
+    [-5, -3, -3.5, -9, float('-inf'), -3.5, -3, -5]]    
+'''
