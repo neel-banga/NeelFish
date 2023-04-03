@@ -2,9 +2,8 @@
 
 Buggy parts to fix
 
-- fix spot_taken function
 - fix the easy IF statements (whether it is in bounds or not)
-- check every other peice 
+- check every other peice       
 - also make sure that rook and bishop can't just IGNORE the pawn in front of it lol
 
 
@@ -162,11 +161,40 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         if spot_taken() == False:
             return False
 
-        for i in range(1, 8):
-            if old_x + i == x and old_y == y:
+        for i in range(0, 7):
+
+            # Make sure that rooks can't jump over pawns
+            
+            # For left / right
+
+            x_movement = True
+            y_movement = True
+
+            if piece > 0:
+                if board[old_y][i] > 0:
+                    x_movement = False
+
+            else:
+                if board[old_y][i] < 0:
+                    x_movement = False
+            
+
+            # For up / down
+
+            if piece < 0:
+                if board[i][old_x] < 0:
+                    y_movement = False
+
+            else:
+                if board[i][old_x] > 0:
+                    y_movement = False                
+
+            print(y_movement)
+
+            if old_x + i == x and old_y == y and x_movement == True:
                 return True
 
-            if old_x == x and old_y + i == y:
+            if old_x == x and old_y + i == y and y_movement == True:
                 return True
             
         return False
@@ -273,8 +301,8 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         return captured
     
 board = create_board()
-print(check_user_move(board, 5, 0, 7, 3, 8))
-print(board[0][7])
+print(check_user_move(board, 3, 1, 0, 2, 2))
+print(board[0][1])
 
 
 # Just to make my life easy
