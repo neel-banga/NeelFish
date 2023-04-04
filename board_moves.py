@@ -105,7 +105,7 @@ def check_user_move(board, piece, old_y, old_x, y, x):
     def check_pawn():
 
         if spot_taken() == False:
-            pt = False
+            return False
 
         #  First let's check if it's moving left or right
         if (old_x + 1 == x and old_y == y) or (old_x - 1 == x and old_y == y):
@@ -145,12 +145,24 @@ def check_user_move(board, piece, old_y, old_x, y, x):
 
     def check_bishop():
 
+        if spot_taken() == False:
+            return False
+        
+        movement = True
+
         for i in range(1, 8):
 
-            if spot_taken() == False:
-                return False
+            if piece > 0:
+                if board[i][i] > 0:
+                    movement = False
 
-            if old_x + i == x and old_y + i == y:
+            else:
+                if board[i][i] < 0:
+                    movement = False
+
+        for i in range(1, 8):
+
+            if (old_x + i == x and old_y + i == y) and movement == True:
                 return True
             
         return False
@@ -187,8 +199,6 @@ def check_user_move(board, piece, old_y, old_x, y, x):
             else:
                 if board[i][old_x] < 0:
                     y_movement = False                
-
-            print(y_movement)
 
             if old_x + i == x and old_y == y and x_movement == True:
                 return True
@@ -300,20 +310,13 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         return captured
     
 board = create_board()
-print(check_user_move(board, 5, 7, 0, 7, 1))
+print(check_user_move(board, 3.5, 2, 0, 3, 1))
 print(board[0][1])
 
 
 # Just to make my life easy
 
 # def check_user_move(board, piece, old_x, old_y, x, y):
-
-#print(board[]) - debugging, not exactly working!
-
-# Pawn - WORKS! (maybe not diaganol)
-# KING - WORKS!
-# KNIGHT - WORKS!
-# ROOK - WORKS!
 
 ''' 
 board = [
