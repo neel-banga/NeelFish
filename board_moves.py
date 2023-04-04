@@ -1,15 +1,3 @@
-'''
-
-Buggy parts to fix
-
-- fix the easy IF statements (whether it is in bounds or not)
-- also make sure that rook and bishop can't just IGNORE the pawn in front of it lol
-
-
-'''
-
-
-
 def create_board():
 
     # First, let's assign values to each piece and have those values be the pointer to the piece
@@ -235,23 +223,13 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         # Now let's check for diagonal movement
         if (old_x + 1 == x and old_y + 1 == y) or (old_x - 1 == x and old_y + 1 == y):
             return True
-    '''
-    if not x <= 7 and not x >= 0:
+    
+    if x > 7 and x < 0:
         return False
 
-    if piece >= 0:
-
-        if board[y][x] >= 0:
-
-            return False
-
-    if piece <= 0:
-
-        if board[y][x] <= 0:
-
-            return False
-    ''' 
-
+    if board[old_y][old_x] != piece:
+        return False
+    
     # Now that our piece movement works, let's check if a piece of the other color is captured
     # We want to not only return true BUT we want to return what that piece was & in turn it's point value
 
@@ -310,13 +288,13 @@ def check_user_move(board, piece, old_y, old_x, y, x):
         return captured
     
 board = create_board()
-print(check_user_move(board, 3.5, 2, 0, 3, 1))
+print(check_user_move(board, 1, 1, 0, 2, 0))
 print(board[0][1])
 
 
 # Just to make my life easy
 
-# def check_user_move(board, piece, old_x, old_y, x, y):
+# def check_user_move(board, piece, old_y, old_x, y, x):
 
 ''' 
 board = [
