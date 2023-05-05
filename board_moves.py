@@ -1,3 +1,15 @@
+'''
+
+Buggy parts to fix
+
+- fix the easy IF statements (whether it is in bounds or not)
+- also make sure that rook and bishop can't just IGNORE the pawn in front of it lol
+
+
+'''
+
+
+
 def create_board():
 
     # First, let's assign values to each piece and have those values be the pointer to the piece
@@ -508,7 +520,10 @@ def is_king_in_check(board, king_color):
 # let's adjust our method for VALIDATING user moves to simply adding them to an array and generating ALL possible moves
 
 board = create_board()
-print(generate_all_moves(board))
+print(check_user_move(board, 3.5, 2, 0, 3, 1))
+print(board[0][1])
+
+
 # Just to make my life easy
 
 # def check_user_move(board, piece, old_y, old_x, y, x):
