@@ -647,6 +647,24 @@ def is_king_in_check(board, king_color):
     
     return False
 
+# Now that our piece movement works, let's check if a piece of the other color is captured
+# We want to not only return true BUT we want to return what that piece was & in turn it's point value
+
+def is_captured(board, piece, y, x): # Taking in new positions
+    if piece > 0:
+        if board[y][x] < 0:
+            return board[y][x]
+        else:
+            if board[y][x] < 0:
+
+                # Here we're simply converting from neg. to pos. 
+                # This is due to the fact that we use neg. and pos. to distiguish the color of pieices
+                # But we only care about the point value now, so we want to return the POSITIVE point value
+
+                return board[y][x]*-1 
+            
+    return False
+
 # let's adjust our method for VALIDATING user moves to simply adding them to an array and generating ALL possible moves
 
 board = create_board()
