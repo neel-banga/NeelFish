@@ -1,3 +1,5 @@
+import copy
+
 def create_board():
 
     # First, let's assign values to each piece and have those values be the pointer to the piece
@@ -607,6 +609,8 @@ def generate_all_moves(board, turn):
     
     # Generate moves for king
     moves += generate_king_moves(board, turn)
+
+    if is_king_in_check(board, turn) == True: moves = king_check_moves()
     
     return moves
 
@@ -635,34 +639,87 @@ def is_king_in_check(board, king_color):
     
     return False
 
+def king_check_moves(board, moves, king_color):
+
+    new_board = copy.deepcopy(board)
+
+    for i in moves:
+        new_board[[i][1]] = new_board[[i][0]]
+        new_board[[i][0]] = 0
+
+        if is_king_in_check(new_board, king_color) == True:
+            moves.pop(i)
+
+    return moves
+
 # Now that our piece movement works, let's check if a piece of the other color is captured
 # We want to not only return true BUT we want to return what that piece was & in turn it's point value
 
-def is_captured(board, piece, y, x): # Taking in new positions
-    if piece > 0:
-        if board[y][x] < 0:
-            return board[y][x]
-        else:
-            if board[y][x] < 0:
-
-                # Here we're simply converting from neg. to pos. 
-                # This is due to the fact that we use neg. and pos. to distiguish the color of pieices
-                # But we only care about the point value now, so we want to return the POSITIVE point value
-
-                return board[y][x]*-1 
-            
-    return False
+def is_captured(board, side, y, x):
+    piece = board[y][x]
+    if side == 1 and piece < 0:
+        return abs(piece) # Convert to absolute value - might change this later
+    elif side == -1 and piece > 0:
+        return abs(piece)
+    else:
+        return 0
 
 # let's adjust our method for VALIDATING user moves to simply adding them to an array and generating ALL possible moves
 
+# Now detect checkmate
+
+def is_checkmate(board, side):
+    if not is_king_in_check(board, side):
+        return False
+
+    moves = generate_all_moves(board, side)
+
+    if len(moves) == 0:
+        return True
+
+    for move in moves:
+        start_row, start_col = move[0][0], move[0][1]
+        end_row, end_col = move[1][0], move[1][1]
+        captured_piece = is_captured(board, side, end_row, end_col)
+
+        hypothetical_board = copy.deepcopy(board)
+        hypothetical_board[end_row][end_col] = hypothetical_board[start_row][start_col]
+        hypothetical_board[start_row][start_col] = 0
+
+        if is_king_in_check(hypothetical_board, side):
+            continue
+
+        return False
+
+    return True
+
+TURN = -1
+
+def move_piece(board, y, x, newy, newx):
+    board[newy][newx] = board[y][x]
+    board[y][x] = 0
+    return board
+
+
+#while True:
+
 board = create_board()
-print(generate_all_moves(board, -1))
-print(is_king_in_check(board, -1))
+moves = generate_all_moves(board, TURN)
 
+for i in range(len(moves)):
+    move = moves[i]
+    capture = is_captured(board, TURN, move[1][0], move[1][1])
+    moves[i] = (capture,) + move
 
-# Just to make my life easy
+    if is_checkmate(board, TURN):
+        if TURN == -1:
+            print('WHITE WINS')
+        elif TURN == 1:
+            print('BLACK WINS')
 
-# def check_user_move(board, piece, old_y, old_x, y, x):
+print(moves)
+
+TURN *= -1
 
 ''' 
 board = [
@@ -675,5 +732,3 @@ board = [
     [-1, -1, -1, -1, -1, -1, -1, -1],
     [-5, -3, -3.5, -9, float('-inf'), -3.5, -3, -5]]    
 '''
-
-# In the future we can do <= and the opposite for the other side
