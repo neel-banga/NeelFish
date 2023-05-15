@@ -330,7 +330,7 @@ def generate_knight_moves(board, turn):
 
             # Only consider moves that are within the bounds of the board
             if i >= 0 and i < 8 and j >= 0 and j < 8:
-                if board[i][j] == 0 or board[row][col+i] * turn < 0:
+                if board[i][j] == 0 or board[i][j] * turn < 0:
                     moves.append(((row, col), (i, j)))
 
     for row in range(8):
@@ -582,42 +582,43 @@ def generate_queen_moves(board, turn):
 
     return moves
 
-def generate_king_moves(board):
+def generate_king_moves(board, turn):
     moves = []
     for row in range(8):
         for col in range(8):
             piece = board[row][col]
-            if piece == float('inf'):
+            if piece == float('inf') * turn:
                 # Generate all possible moves for the king
                 for i in range(-1, 2):
                     for j in range(-1, 2):
                         if i == 0 and j == 0:
                             continue
                         if row + i >= 0 and row + i < 8 and col + j >= 0 and col + j < 8:
-                            if board[row + i][col + j] == 0 or board[row + i][col + j] * piece < 0:
+                            target_piece = board[row + i][col + j]
+                            if target_piece == 0 or target_piece * turn < 0:
                                 moves.append(((row, col), (row + i, col + j)))
     return moves
 
-def generate_all_moves(board):
+def generate_all_moves(board, turn):
     moves = []
     
     # Generate moves for pawns
-    moves += generate_pawn_moves(board)
+    moves += generate_pawn_moves(board, turn)
     
     # Generate moves for knights
-    moves += generate_knight_moves(board)
+    moves += generate_knight_moves(board, turn)
     
     # Generate moves for bishops
-    moves += generate_bishop_moves(board)
+    moves += generate_bishop_moves(board, turn)
     
     # Generate moves for rooks
-    moves += generate_rook_moves(board)
+    moves += generate_rook_moves(board, turn)
     
     # Generate moves for queens
-    moves += generate_queen_moves(board)
+    moves += generate_queen_moves(board, turn)
     
     # Generate moves for king
-    moves += generate_king_moves(board)
+    moves += generate_king_moves(board, turn)
     
     return moves
 
@@ -649,7 +650,7 @@ def is_king_in_check(board, king_color):
 # let's adjust our method for VALIDATING user moves to simply adding them to an array and generating ALL possible moves
 
 board = create_board()
-print(generate_queen_moves(board, -1))
+print(generate_all_moves(board, -1))
 print(is_king_in_check(board, -1))
 
 
