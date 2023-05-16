@@ -20,7 +20,7 @@ while True:
         moves[i] = (capture,) + move
 
     if not moves:
-        print("No available moves.")
+        print("No available moves. Checkmate")
         pprint.pprint(board)
         break        
 

@@ -1,5 +1,5 @@
 import copy
-import os
+import sys
 
 def create_board():
 
@@ -422,33 +422,38 @@ def generate_bishop_moves(board, turn):
     return moves
 
 def generate_rook_moves(board, turn):
-    def gen_moves(board, row, col):
-        for i in range(1, 8):
-            # check moves in vertical direction
-            if row+i <= 7:
-                if board[row+i][col] == 0 or board[row+i][col] * turn < 0:
-                    moves.append(((row, col), (row+i, col)))
-                if board[row+i][col] != 0:
+    moves = []
+
+    def gen_moves(row, col):
+        directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        for direction in directions:
+            delta_row, delta_col = direction
+            next_row, next_col = row + delta_row, col + delta_col
+
+            while 0 <= next_row < 8 and 0 <= next_col < 8:
+                target_piece = board[next_row][next_col]
+
+                if target_piece == 0:
+                    moves.append(((row, col), (next_row, next_col)))
+                elif target_piece * turn < 0:
+                    moves.append(((row, col), (next_row, next_col)))
+                    break
+                else:
                     break
 
-            # check moves in horizontal direction
-            if col+i <= 7:
-                if board[row][col+i] == 0 or board[row][col+i] * turn < 0:
-                    moves.append(((row, col), (row, col+i)))
-                if board[row][col+i] != 0:
-                    break
+                next_row += delta_row
+                next_col += delta_col
 
-            if row-i >= 0:
-                if board[row-i][col] == 0 or board[row-i][col] * turn < 0:
-                    moves.append(((row, col), (row-i, col)))
-                if board[row-i][col] != 0:
-                    break
+    for row in range(8):
+        for col in range(8):
+            piece = board[row][col]
+            if turn == 1 and piece == 5:  # White rook
+                gen_moves(row, col)
+            elif turn == -1 and piece == -5:  # Black rook
+                gen_moves(row, col)
 
-            if col-i >= 0:
-                if board[row][col-i] == 0 or board[row][col-i] * turn < 0:
-                    moves.append(((row, col), (row, col-i)))
-                if board[row][col-i] != 0:
-                    break
+    return moves
 
     moves = []
     for row in range(8):
@@ -616,7 +621,6 @@ def generate_all_moves(board, turn):
     
     return moves
 
-
 def is_king_in_check(board, king_color):
     # Find the king's position
     king = float('inf') * king_color
@@ -631,6 +635,8 @@ def is_king_in_check(board, king_color):
     
     if not king_pos:
         return False
+    
+    print(king_pos)
 
     # Check for attacks from different pieces
     opponent_color = -king_color
@@ -656,6 +662,7 @@ def is_king_in_check(board, king_color):
     # Check for attacks from rooks or queens (straight attacks)
     straight_moves = generate_rook_moves(board, opponent_color)
     for move in straight_moves:
+        print(move)
         if move[1] == king_pos:
             return True
 
@@ -686,8 +693,8 @@ def king_check_moves(board, moves, king_color):
             valid_moves.append(move)
 
     if not valid_moves:
-        print('Checkmate')
-        os.exit()
+        print(f'Checkmate, {king_color*-1} Wins!')
+        sys.exit()
 
     return valid_moves
 
@@ -695,6 +702,7 @@ def remove_kings_touch_moves(board, moves):
     new_moves = []
     
     for move in moves:
+        
         start_pos, end_pos = move
         start_piece = board[start_pos[0]][start_pos[1]]
         end_piece = board[end_pos[0]][end_pos[1]]
@@ -795,12 +803,12 @@ def is_draw(board):
 def pawn_promotion(board):
     # Promote pawns on the 0th row to a queen (-1 to -9)
     for col in range(8):
-        if board[0][col] == 1:
+        if board[0][col] == -1:
             board[0][col] = -9
 
     # Promote pawns on the 7th row to a queen (1 to 9)
     for col in range(8):
-        if board[7][col] == -1:
+        if board[7][col] == 1:
             board[7][col] = 9
 
     return board
@@ -813,10 +821,10 @@ def move_piece(board, y, x, newy, newx):
 
 #while True:
 
-board = create_board()
+'''board = create_board()
 moves = generate_all_moves(board, TURN)
-
-for i in range(len(moves)):
+'''
+'''for i in range(len(moves)):
     move = moves[i]
     capture = is_captured(board, TURN, move[1][0], move[1][1])
     moves[i] = (capture,) + move
@@ -827,7 +835,7 @@ for i in range(len(moves)):
         elif TURN == 1:
             print('BLACK WINS')
 
-TURN *= -1
+TURN *= -1'''
 
 ''' 
 board = [
@@ -840,3 +848,16 @@ board = [
     [-1, -1, -1, -1, -1, -1, -1, -1],
     [-5, -3, -3.5, -9, float('-inf'), -3.5, -3, -5]]    
 '''
+
+
+board = [
+    [0, 0, 0, 0, float('inf'), 0, 0, -5],
+    [0, 0, 0, 0, 0, 0, 0, -5],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, float('-inf'), 0, 0, 0]]    
+
+print(is_king_in_check(board, 1))
