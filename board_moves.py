@@ -636,8 +636,6 @@ def is_king_in_check(board, king_color):
     if not king_pos:
         return False
     
-    print(king_pos)
-
     # Check for attacks from different pieces
     opponent_color = -king_color
 
@@ -662,7 +660,6 @@ def is_king_in_check(board, king_color):
     # Check for attacks from rooks or queens (straight attacks)
     straight_moves = generate_rook_moves(board, opponent_color)
     for move in straight_moves:
-        print(move)
         if move[1] == king_pos:
             return True
 
@@ -859,5 +856,3 @@ board = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, float('-inf'), 0, 0, 0]]    
-
-print(is_king_in_check(board, 1))
