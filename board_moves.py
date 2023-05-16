@@ -717,8 +717,6 @@ for i in range(len(moves)):
         elif TURN == 1:
             print('BLACK WINS')
 
-print(moves)
-
 TURN *= -1
 
 ''' 
