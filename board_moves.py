@@ -1,4 +1,5 @@
 import copy
+import os
 
 def create_board():
 
@@ -610,17 +611,19 @@ def generate_all_moves(board, turn):
     # Generate moves for king
     moves += generate_king_moves(board, turn)
 
-    if is_king_in_check(board, turn) == True: moves = king_check_moves()
+    if is_king_in_check(board, turn) == True: moves = king_check_moves(board, moves, turn)
+    moves = remove_kings_touch_moves(board, moves)
     
     return moves
 
 
 def is_king_in_check(board, king_color):
     # Find the king's position
+    king = float('inf') * king_color
     king_pos = None
     for row in range(8):
         for col in range(8):
-            if board[row][col] == king_color * 6:
+            if board[row][col] == king:
                 king_pos = (row, col)
                 break
         if king_pos:
@@ -628,29 +631,102 @@ def is_king_in_check(board, king_color):
     
     if not king_pos:
         return False
-    
-    # Check for attacks on the king's position
-    for row in range(8):
-        for col in range(8):
-            piece = board[row][col]
-            if piece != 0 and piece // abs(piece) != king_color:
-                if (row, col) in generate_all_moves(board, row, col):
-                    return True
-    
+
+    # Check for attacks from different pieces
+    opponent_color = -king_color
+
+    # Check for attacks from pawns
+    pawn_moves = generate_pawn_moves(board, opponent_color)
+    for move in pawn_moves:
+        if move[1] == king_pos:
+            return True
+
+    # Check for attacks from knights
+    knight_moves = generate_knight_moves(board, opponent_color)
+    for move in knight_moves:
+        if move[1] == king_pos:
+            return True
+
+    # Check for attacks from bishops or queens (diagonal attacks)
+    diagonal_moves = generate_bishop_moves(board, opponent_color)
+    for move in diagonal_moves:
+        if move[1] == king_pos:
+            return True
+
+    # Check for attacks from rooks or queens (straight attacks)
+    straight_moves = generate_rook_moves(board, opponent_color)
+    for move in straight_moves:
+        if move[1] == king_pos:
+            return True
+
+    straight_moves = generate_queen_moves(board, opponent_color)
+    for move in straight_moves:
+        if move[1] == king_pos:
+            return True
+        
+    straight_moves = generate_king_moves(board, opponent_color)
+    for move in straight_moves:
+        if move[1] == king_pos:
+            return True
+
     return False
 
 def king_check_moves(board, moves, king_color):
+    valid_moves = []
 
-    new_board = copy.deepcopy(board)
+    for move in moves:
+        new_board = copy.deepcopy(board)
+        start_pos, end_pos = move
 
-    for i in moves:
-        new_board[[i][1]] = new_board[[i][0]]
-        new_board[[i][0]] = 0
+        # Perform the move on the new board
+        new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
+        new_board[start_pos[0]][start_pos[1]] = 0
 
-        if is_king_in_check(new_board, king_color) == True:
-            moves.pop(i)
+        if not is_king_in_check(new_board, king_color):
+            valid_moves.append(move)
 
-    return moves
+    if not valid_moves:
+        print('Checkmate')
+        os.exit()
+
+    return valid_moves
+
+def remove_kings_touch_moves(board, moves):
+    new_moves = []
+    
+    for move in moves:
+        start_pos, end_pos = move
+        start_piece = board[start_pos[0]][start_pos[1]]
+        end_piece = board[end_pos[0]][end_pos[1]]
+        
+        # Create a temporary board to simulate the move
+        temp_board = copy.deepcopy(board)
+        temp_board[end_pos[0]][end_pos[1]] = start_piece
+        temp_board[start_pos[0]][start_pos[1]] = 0
+        
+        # Find the positions of both kings
+        white_king_pos = None
+        black_king_pos = None
+        for row in range(8):
+            for col in range(8):
+                if temp_board[row][col] == float('inf'):
+                    white_king_pos = (row, col)
+                elif temp_board[row][col] == float('-inf'):
+                    black_king_pos = (row, col)
+        
+        # Check if the kings are adjacent
+        if white_king_pos and black_king_pos and are_adjacent(white_king_pos, black_king_pos):
+            continue  # Skip the move if it leads to kings touching each other
+        
+        new_moves.append(move)
+    
+    return new_moves
+
+
+def are_adjacent(pos1, pos2):
+    row_diff = abs(pos1[0] - pos2[0])
+    col_diff = abs(pos1[1] - pos2[1])
+    return row_diff <= 1 and col_diff <= 1
 
 # Now that our piece movement works, let's check if a piece of the other color is captured
 # We want to not only return true BUT we want to return what that piece was & in turn it's point value
@@ -694,6 +770,40 @@ def is_checkmate(board, side):
     return True
 
 TURN = -1
+
+def is_draw(board):
+    # Check for lack of material
+    piece_counts = {}
+    for row in board:
+        for piece in row:
+            if piece != 0:
+                piece_counts[piece] = piece_counts.get(piece, 0) + 1
+    
+    # Determine if there is insufficient material for a checkmate
+    if (
+        len(piece_counts) == 2 and
+        all(count == 1 or count == 2 for count in piece_counts.values())
+    ):
+        return True
+    
+    # Check for stalemate
+    if not generate_all_moves(board, 1) and not is_king_in_check(board, 1):
+        return True
+    
+    return False
+
+def pawn_promotion(board):
+    # Promote pawns on the 0th row to a queen (-1 to -9)
+    for col in range(8):
+        if board[0][col] == 1:
+            board[0][col] = -9
+
+    # Promote pawns on the 7th row to a queen (1 to 9)
+    for col in range(8):
+        if board[7][col] == -1:
+            board[7][col] = 9
+
+    return board
 
 def move_piece(board, y, x, newy, newx):
     board[newy][newx] = board[y][x]
