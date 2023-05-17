@@ -18,7 +18,7 @@ def evaluate_board(board, turn):
     if king_dead:
         return float('inf')
     if opp_king_dead:
-        return -float('inf')
+        return float('-inf')
 
     if board_moves.is_checkmate(board, turn):
         return -float('inf')
@@ -44,14 +44,16 @@ def evaluate_board(board, turn):
 
     return score
 
-board = [[0, 0, -1, 0, 0, 0, 0, 0],
+board = [[0, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, -1, 0, 0, 0, 0],
  [0, 0, 0, 0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0, 0, 0, 0],
- [0, 0, 0, 0, float('inf'), 0, 0, 0],
- [0, 0, 0, 0, 0, 0, 0, 0],
- [float('-inf'), 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, float('inf'), 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 5, 0, 0, 0],
+ [1, 0, 0, 0, 0, 0, 0, 0],
+ [0, 0, 0, 0, 0, float('-inf'), 0, 0],
  [0, 0, 0, 0, 0, 0, 0, 0]]
 
 board = board_moves.pawn_promotion(board)
-print(evaluate_board(board, -1))
+print(evaluate_board(board, 1))
+
+#def minimax(board, depth, max_player):

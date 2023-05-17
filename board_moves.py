@@ -839,11 +839,3 @@ board = [[5, 3, 0, float('inf'), 0, 0, 3, 0],
  [0, 0, 0, 0, 0, 0, 0, -1],
  [0, -1, 0, -1, -3.5, 0, 0, -1],
  [-5, 0, 0, 0, float('-inf'), 0, 0, 0]]
-
-print(is_king_in_check(board, 1))
-
-moves = generate_all_moves(board, 1)
-
-moves = king_check_moves(board, moves, 1)
-
-print(moves[random.randint(0, len(moves)-1)])
