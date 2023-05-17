@@ -1,7 +1,7 @@
 import board_moves
 import random
 import pprint
-import time
+import sys
 
 board = board_moves.create_board()
 
@@ -20,11 +20,39 @@ while True:
         moves[i] = (capture,) + move
 
     if not moves:
-        print("No available moves. Checkmate")
-        pprint.pprint(board)
-        break        
+        if board_moves.is_checkmate(board, TURN):
+            if TURN == -1:
+                print('CHECKMATE - White Wins!')
+                sys.exit()
+            elif TURN == 1:
+                print('CHECKMATE - Black Wins!')
 
-    move = random.choice(moves)
+            pprint.pprint(board)
+            break
+
+        if board_moves.is_draw(board):
+            print('DRAW')
+            pprint.pprint(board)
+            break       
+
+    try: move = random.choice(moves)
+    except: 
+        if board_moves.is_checkmate(board, TURN):
+            if TURN == -1:
+                print('CHECKMATE - White Wins!')
+                sys.exit()
+            elif TURN == 1:
+                print('CHECKMATE - Black Wins!')
+
+            pprint.pprint(board)
+            break
+
+        if board_moves.is_draw(board):
+            print('DRAW')
+            pprint.pprint(board)
+            break      
+
+
     board = board_moves.move_piece(board, move[1][0], move[1][1], move[2][0], move[2][1])
 
     TURN *= -1

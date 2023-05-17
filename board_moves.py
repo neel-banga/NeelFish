@@ -1,5 +1,6 @@
 import copy
 import sys
+import random
 
 def create_board():
 
@@ -616,7 +617,8 @@ def generate_all_moves(board, turn):
     # Generate moves for king
     moves += generate_king_moves(board, turn)
 
-    if is_king_in_check(board, turn) == True: moves = king_check_moves(board, moves, turn)
+    moves = king_check_moves(board, moves, turn) # prevents going in a check and prevents capturing king when in a check
+
     moves = remove_kings_touch_moves(board, moves)
     
     return moves
@@ -689,11 +691,25 @@ def king_check_moves(board, moves, king_color):
         if not is_king_in_check(new_board, king_color):
             valid_moves.append(move)
 
-    if not valid_moves:
-        print(f'Checkmate, {king_color*-1} Wins!')
-        sys.exit()
-
     return valid_moves
+
+'''    if not valid_moves:
+
+        if is_draw(board) == True:
+            print('DRAW!')
+            sys.exit()
+
+        elif is_checkmate(board, TURN) == True:
+            print(f'Checkmate, {king_color*-1} Wins!')
+            sys.exit()
+
+        
+        elif is_checkmate(board, TURN*-1) == True:
+            print(f'Checkmate, {king_color} Wins!')
+            sys.exit()
+
+        else:
+            print('Game Over - No Legal Moves (Draw?!)')'''
 
 def remove_kings_touch_moves(board, moves):
     new_moves = []
@@ -813,46 +829,21 @@ def pawn_promotion(board):
 def move_piece(board, y, x, newy, newx):
     board[newy][newx] = board[y][x]
     board[y][x] = 0
-    return board
+    return board    
 
+board = [[5, 3, 0, float('inf'), 0, 0, 3, 0],
+ [0, 0, 0, 1, 0, 0, 0, 5],
+ [0, 0, 0, 3.5, 1, 1, 0, 0],
+ [1, 0, 0, 0, -1, 0, -3.5, 0],
+ [-1, 0, -1, -9, 0, -1, 0, -5],
+ [0, 0, 0, 0, 0, 0, 0, -1],
+ [0, -1, 0, -1, -3.5, 0, 0, -1],
+ [-5, 0, 0, 0, float('-inf'), 0, 0, 0]]
 
-#while True:
+print(is_king_in_check(board, 1))
 
-'''board = create_board()
-moves = generate_all_moves(board, TURN)
-'''
-'''for i in range(len(moves)):
-    move = moves[i]
-    capture = is_captured(board, TURN, move[1][0], move[1][1])
-    moves[i] = (capture,) + move
+moves = generate_all_moves(board, 1)
 
-    if is_checkmate(board, TURN):
-        if TURN == -1:
-            print('WHITE WINS')
-        elif TURN == 1:
-            print('BLACK WINS')
+moves = king_check_moves(board, moves, 1)
 
-TURN *= -1'''
-
-''' 
-board = [
-    [5, 3, 3.5, 9, float('inf'), 3.5, 3, 5],
-    [1, 1, 1, 1, 1, 1, 1, 1],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [-1, -1, -1, -1, -1, -1, -1, -1],
-    [-5, -3, -3.5, -9, float('-inf'), -3.5, -3, -5]]    
-'''
-
-
-board = [
-    [0, 0, 0, 0, float('inf'), 0, 0, -5],
-    [0, 0, 0, 0, 0, 0, 0, -5],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, float('-inf'), 0, 0, 0]]    
+print(moves[random.randint(0, len(moves)-1)])
