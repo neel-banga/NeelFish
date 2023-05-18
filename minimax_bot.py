@@ -56,4 +56,4 @@ board = [[0, 0, 0, 0, 0, 0, 0, 0],
 board = board_moves.pawn_promotion(board)
 print(evaluate_board(board, 1))
 
-#def minimax(board, depth, max_player):
+#def minimax():
