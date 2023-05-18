@@ -1,10 +1,17 @@
 import board_moves
 import pprint
+import copy
+
+def log(arg):
+    pprint.pprint(arg)
 
 def evaluate_board(board, turn):
     our_pieces = 0
     their_pieces = 0
     score = 0
+    opp_king_dead = True
+    king_dead = True
+
 
     for row in range(8):
         for col in range(8):
@@ -44,16 +51,100 @@ def evaluate_board(board, turn):
 
     return score
 
-board = [[0, 0, 0, 0, 0, 0, 0, 0],
- [0, 0, 0, -1, 0, 0, 0, 0],
- [0, 0, 0, 0, 0, 0, 0, 0],
- [0, 0, float('inf'), 0, 0, 0, 0, 0],
- [0, 0, 0, 0, 5, 0, 0, 0],
- [1, 0, 0, 0, 0, 0, 0, 0],
- [0, 0, 0, 0, 0, float('-inf'), 0, 0],
- [0, 0, 0, 0, 0, 0, 0, 0]]
 
-board = board_moves.pawn_promotion(board)
-print(evaluate_board(board, 1))
+def select_best_move(board, turn):
+    moves = board_moves.generate_all_moves(board, turn)
 
-#def minimax():
+    if not moves:
+        return False
+    
+    highest_score = float('-inf')
+    highest_board = None  # Initialize with None
+    for move in moves:
+        new_board = copy.deepcopy(board)
+        start_pos, end_pos = move
+
+        # Perform the move on the new board
+        new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
+        new_board[start_pos[0]][start_pos[1]] = 0
+
+        alpha = float('-inf')
+        beta = float('inf')
+        
+        current_score = minimax(new_board, 2, turn, alpha, beta)
+
+        if current_score > highest_score:
+            highest_board = copy.deepcopy(new_board)  # Make a copy of new_board
+            highest_score = current_score
+
+    return highest_board
+
+def minimax(board, depth, turn, alpha, beta):
+
+    if depth == 0 or board_moves.is_checkmate(board, turn*-1) or board_moves.is_checkmate(board, turn) or board_moves.is_draw(board):
+        return evaluate_board(board, turn)
+    
+    moves = board_moves.generate_all_moves(board, turn)
+
+    if turn == 1:
+        max_eval = float('-inf')
+        max_eval = float('inf')
+
+        for move in moves:
+            new_board = copy.deepcopy(board)
+            start_pos, end_pos = move
+            new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
+            new_board[start_pos[0]][start_pos[1]] = 0
+            eval = minimax(new_board, depth-1, turn*-1, alpha, beta)
+            max_eval = max(max_eval, eval) # Highest EVAL
+            #max_eval = eval # END EVAL 
+
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break
+
+        
+        return max_eval
+
+    else:
+        max_eval = float('inf')
+
+        for move in moves:
+            new_board = copy.deepcopy(board)
+            start_pos, end_pos = move
+            new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
+            new_board[start_pos[0]][start_pos[1]] = 0
+            eval = minimax(new_board, depth-1, turn*-1, alpha, beta)
+            min_eval = min(max_eval, eval) # Highest EVAL
+            #max_eval = eval # END EVAL  
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break       
+
+        return min_eval
+
+'''
+board = board_moves.create_board()
+
+turn = 1
+
+while True:
+
+    if board_moves.is_checkmate(board, 1) or board_moves.is_checkmate(board, -1) or board_moves.is_draw(board):
+
+        if board_moves.is_checkmate(board, 1):
+            print('White Wins!')
+
+        elif board_moves.is_checkmate(board, -1):
+            print('Black Wins')
+
+        else:
+            print('Draw')
+
+        log(board)
+
+    board = board_moves.pawn_promotion(board)
+
+    log(board)
+    board = select_best_move(board, turn)
+    turn *= -1'''
