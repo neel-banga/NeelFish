@@ -2,6 +2,9 @@ import board_moves
 import pprint
 import copy
 
+
+DEPTH = 4
+
 def log(arg):
     pprint.pprint(arg)
 
@@ -71,7 +74,7 @@ def select_best_move(board, turn):
         alpha = float('-inf')
         beta = float('inf')
         
-        current_score = minimax(new_board, 2, turn, alpha, beta)
+        current_score = minimax(new_board, DEPTH, turn, alpha, beta)
 
         if current_score > highest_score:
             highest_board = copy.deepcopy(new_board)  # Make a copy of new_board
@@ -122,29 +125,3 @@ def minimax(board, depth, turn, alpha, beta):
                 break       
 
         return min_eval
-
-'''
-board = board_moves.create_board()
-
-turn = 1
-
-while True:
-
-    if board_moves.is_checkmate(board, 1) or board_moves.is_checkmate(board, -1) or board_moves.is_draw(board):
-
-        if board_moves.is_checkmate(board, 1):
-            print('White Wins!')
-
-        elif board_moves.is_checkmate(board, -1):
-            print('Black Wins')
-
-        else:
-            print('Draw')
-
-        log(board)
-
-    board = board_moves.pawn_promotion(board)
-
-    log(board)
-    board = select_best_move(board, turn)
-    turn *= -1'''
