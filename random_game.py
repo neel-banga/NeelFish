@@ -1,14 +1,14 @@
 import board_moves
 import random
-import pprint
 import sys
+from minimax_bot import chessb
 
 board = board_moves.create_board()
 
 TURN = -1
 
 while True:
-    pprint.pprint(board)
+    chessb(board)
 
     moves = board_moves.generate_all_moves(board, TURN)
 
@@ -27,12 +27,12 @@ while True:
             elif TURN == 1:
                 print('CHECKMATE - Black Wins!')
 
-            pprint.pprint(board)
+            chessb(board)
             break
 
         if board_moves.is_draw(board):
             print('DRAW')
-            pprint.pprint(board)
+            chessb(board)
             break       
 
     try: move = random.choice(moves)
@@ -44,12 +44,12 @@ while True:
             elif TURN == 1:
                 print('CHECKMATE - Black Wins!')
 
-            pprint.pprint(board)
+            chessb(board)
             break
 
         if board_moves.is_draw(board):
             print('DRAW')
-            pprint.pprint(board)
+            chessb(board)
             break      
 
 
@@ -61,10 +61,10 @@ while True:
 
     if board_moves.is_checkmate(board, TURN):
         print('CHECKMATE')
-        pprint.pprint(board)
+        chessb(board)
         break
 
     if board_moves.is_draw(board):
         print('DRAW')
-        pprint.pprint(board)
+        chessb(board)
         break

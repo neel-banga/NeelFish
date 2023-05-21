@@ -629,9 +629,23 @@ def is_king_in_check(board, king_color):
     king_pos = None
     for row in range(8):
         for col in range(8):
-            if board[row][col] == king:
-                king_pos = (row, col)
-                break
+            try:
+                if board[row][col] == king:
+                    king_pos = (row, col)
+                    break
+
+            except:
+                if is_checkmate(board, king_color):
+                    if king_color == -1:
+                        print('CHECKMATE - White Wins!')
+                        sys.exit()
+                    elif king_color == 1:
+                        print('CHECKMATE - Black Wins!')
+                        sys.exit()
+
+                if is_draw(board):
+                    print('DRAW')
+                    sys.exit()
         if king_pos:
             break
     
