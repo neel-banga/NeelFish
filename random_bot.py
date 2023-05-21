@@ -1,7 +1,8 @@
 import board_moves
 import random
-import pprint
 import time
+import pprint
+from minimax_bot import chessb
 
 board = board_moves.create_board()
 
@@ -9,7 +10,7 @@ TURN = -1
 
 for i in range(60):
 
-    pprint.pprint(board)
+    chessb(board)
     time.sleep(1)
     
     moves = board_moves.generate_all_moves(board, TURN)
