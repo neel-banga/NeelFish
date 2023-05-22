@@ -5,7 +5,7 @@ from minimax_bot import chessb
 
 board = board_moves.create_board()
 
-TURN = -1
+TURN = 1
 
 while True:
     chessb(board)

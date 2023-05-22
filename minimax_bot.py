@@ -5,7 +5,7 @@ import random
 import time
 
 
-DEPTH = 4
+DEPTH = 3
 
 def log(arg):
     pprint.pprint(arg)
@@ -48,7 +48,6 @@ def evaluate_board(board, turn):
     score = 0
     opp_king_dead = True
     king_dead = True
-
 
     for row in range(8):
         for col in range(8):
@@ -197,44 +196,47 @@ def minimax(board, depth, turn, alpha, beta):
         return min_eval
     
 def minimax_time_limit(board, depth, turn, alpha, beta, start_time, duration):
-    if time.time() - start_time >= duration:
+    try:
+        if time.time() - start_time >= duration:
+            return evaluate_board(board, turn)
+
+        if depth == 0 or board_moves.is_checkmate(board, turn*-1) or board_moves.is_checkmate(board, turn) or board_moves.is_draw(board):
+            return evaluate_board(board, turn)
+        
+        moves = board_moves.generate_all_moves(board, turn)
+
+        if turn == 1:
+            max_eval = float('-inf')
+
+            for move in moves:
+                new_board = copy.deepcopy(board)
+                start_pos, end_pos = move
+                new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
+                new_board[start_pos[0]][start_pos[1]] = 0
+                eval = minimax_time_limit(new_board, depth-1, turn*-1, alpha, beta, start_time, duration)
+                max_eval = max(max_eval, eval)
+
+                alpha = max(alpha, eval)
+                if beta <= alpha:
+                    break
+
+            return max_eval
+
+        else:
+            min_eval = float('inf')
+
+            for move in moves:
+                new_board = copy.deepcopy(board)
+                start_pos, end_pos = move
+                new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
+                new_board[start_pos[0]][start_pos[1]] = 0
+                eval = minimax_time_limit(new_board, depth-1, turn*-1, alpha, beta, start_time, duration)
+                min_eval = min(min_eval, eval)
+
+                beta = min(beta, eval)
+                if beta <= alpha:
+                    break       
+
+            return min_eval
+    except:
         return evaluate_board(board, turn)
-
-    if depth == 0 or board_moves.is_checkmate(board, turn*-1) or board_moves.is_checkmate(board, turn) or board_moves.is_draw(board):
-        return evaluate_board(board, turn)
-    
-    moves = board_moves.generate_all_moves(board, turn)
-
-    if turn == 1:
-        max_eval = float('-inf')
-
-        for move in moves:
-            new_board = copy.deepcopy(board)
-            start_pos, end_pos = move
-            new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
-            new_board[start_pos[0]][start_pos[1]] = 0
-            eval = minimax_time_limit(new_board, depth-1, turn*-1, alpha, beta, start_time, duration)
-            max_eval = max(max_eval, eval)
-
-            alpha = max(alpha, eval)
-            if beta <= alpha:
-                break
-
-        return max_eval
-
-    else:
-        min_eval = float('inf')
-
-        for move in moves:
-            new_board = copy.deepcopy(board)
-            start_pos, end_pos = move
-            new_board[end_pos[0]][end_pos[1]] = new_board[start_pos[0]][start_pos[1]]
-            new_board[start_pos[0]][start_pos[1]] = 0
-            eval = minimax_time_limit(new_board, depth-1, turn*-1, alpha, beta, start_time, duration)
-            min_eval = min(min_eval, eval)
-
-            beta = min(beta, eval)
-            if beta <= alpha:
-                break       
-
-        return min_eval

@@ -1,11 +1,10 @@
 import minimax_bot
 import board_moves
-from minimax_bot import log
 from minimax_bot import chessb
 
 board = board_moves.create_board()
 
-turn = 1
+turn = -1
 
 while True:
 
@@ -25,5 +24,6 @@ while True:
     board = board_moves.pawn_promotion(board)
 
     chessb(board)
-    board = minimax_bot.select_best_move_time_limit(board, turn, 60)
+    
+    board = minimax_bot.select_best_move(board, turn)
     turn *= -1
