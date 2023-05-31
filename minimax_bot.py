@@ -5,7 +5,7 @@ import random
 import time
 
 
-DEPTH = 3
+DEPTH = 2
 
 def log(arg):
     pprint.pprint(arg)
@@ -42,7 +42,7 @@ def chessb(board):
     print('\n')
     print('\n')
 
-def evaluate_board(board, turn):
+'''def evaluate_board(board, turn):
     our_pieces = 0
     their_pieces = 0
     score = 0
@@ -85,7 +85,16 @@ def evaluate_board(board, turn):
     score += (our_pieces * 100)
     score -= (their_pieces * 100)
 
+    return score'''
+
+def evaluate_board(board, _): # you can remove this ot var
+    score = 0
+    for row in board:
+        for piece in row:
+            score += piece
+
     return score
+
 
 
 def select_best_move(board, turn):
