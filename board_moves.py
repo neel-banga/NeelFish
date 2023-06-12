@@ -78,6 +78,36 @@ def create_board():
 
     return board
 
+def chessb(board):
+    print('\n')
+    print('\n')
+
+    chess_pieces = {
+        0: ".",
+        1: "♟️",
+        3: "♞",
+        3.5: "♝",
+        9: "♛",
+        5: "♜",
+        float('inf'): "♚",
+        -1: "♙",
+        -3: "♘",
+        -3.5: "♗",
+        -9: "♕",
+        -5: "♖",
+        float('-inf'): "♔",
+    }
+
+    print("  a b c d e f g h")
+    for i in range(8):
+        print(8 - i, end=" ")
+        for j in range(8):
+            piece = chess_pieces.get(board[i][j], " ")
+            print(piece, end=" ")
+        print()
+    
+    print('\n')
+
 def check_user_move(board, piece, old_y, old_x, y, x):
 
 
@@ -344,83 +374,92 @@ def generate_bishop_moves(board, turn):
             piece = board[row][col]
             if turn == 1:
                 if piece == 3.5:
-                    t1 = True
-                    t2 = True
-                    t3 = True
-                    t4 = True
                     for i in range(1, 8):
-                        if row+i <= 7 and col+i <= 7:
-                            if board[row + i][col + i] == 0 and t1:
+                        if row + i <= 7 and col + i <= 7:
+                            if board[row + i][col + i] == 0:
                                 moves.append(((row, col), (row + i, col + i)))
                             elif board[row + i][col + i] * turn < 0:
                                 moves.append(((row, col), (row + i, col + i)))
-                                t1 = False
+                                break
                             else:
-                                t1 = False
-                        if row+i <= 7 and col-i >= 0:
-                            if board[row + i][col - i] == 0 and t2:
+                                break
+                        else:
+                            break
+                        if row + i <= 7 and col - i >= 0:
+                            if board[row + i][col - i] == 0:
                                 moves.append(((row, col), (row + i, col - i)))
                             elif board[row + i][col - i] * turn < 0:
                                 moves.append(((row, col), (row + i, col - i)))
-                                t2 = False
+                                break
                             else:
-                                t2 = False
-                        if row-i >= 0 and col+i <= 7:
-                            if board[row - i][col + i] == 0 and t3:
+                                break
+                        else:
+                            break
+                        if row - i >= 0 and col + i <= 7:
+                            if board[row - i][col + i] == 0:
                                 moves.append(((row, col), (row - i, col + i)))
                             elif board[row - i][col + i] * turn < 0:
                                 moves.append(((row, col), (row - i, col + i)))
-                                t3 = False
+                                break
                             else:
-                                t3 = False
-                        if row-i >= 0 and col-i >= 0:
-                            if board[row - i][col - i] == 0 and t4:
+                                break
+                        else:
+                            break
+                        if row - i >= 0 and col - i >= 0:
+                            if board[row - i][col - i] == 0:
                                 moves.append(((row, col), (row - i, col - i)))
                             elif board[row - i][col - i] * turn < 0:
                                 moves.append(((row, col), (row - i, col - i)))
-                                t4 = False
+                                break
                             else:
-                                t4 = False
+                                break
+                        else:
+                            break
             elif turn == -1:
                 if piece == -3.5:
-                    t1 = True
-                    t2 = True
-                    t3 = True
-                    t4 = True
                     for i in range(1, 8):
-                        if row+i <= 7 and col+i <= 7:
-                            if board[row + i][col + i] == 0 and t1:
+                        if row + i <= 7 and col + i <= 7:
+                            if board[row + i][col + i] == 0:
                                 moves.append(((row, col), (row + i, col + i)))
                             elif board[row + i][col + i] * turn < 0:
                                 moves.append(((row, col), (row + i, col + i)))
-                                t1 = False
+                                break
                             else:
-                                t1 = False
-                        if row+i <= 7 and col-i >= 0:
-                            if board[row + i][col - i] == 0 and t2:
+                                break
+                        else:
+                            break
+                        if row + i <= 7 and col - i >= 0:
+                            if board[row + i][col - i] == 0:
                                 moves.append(((row, col), (row + i, col - i)))
                             elif board[row + i][col - i] * turn < 0:
                                 moves.append(((row, col), (row + i, col - i)))
-                                t2 = False
+                                break
                             else:
-                                t2 = False
-                        if row-i >= 0 and col+i <= 7:
-                            if board[row - i][col + i] == 0 and t3:
+                                break
+                        else:
+                            break
+                        if row - i >= 0 and col + i <= 7:
+                            if board[row - i][col + i] == 0:
                                 moves.append(((row, col), (row - i, col + i)))
                             elif board[row - i][col + i] * turn < 0:
                                 moves.append(((row, col), (row - i, col + i)))
-                                t3 = False
+                                break
                             else:
-                                t3 = False
-                        if row-i >= 0 and col-i >= 0:
-                            if board[row - i][col - i] == 0 and t4:
+                                break
+                        else:
+                            break
+                        if row - i >= 0 and col - i >= 0:
+                            if board[row - i][col - i] == 0:
                                 moves.append(((row, col), (row - i, col - i)))
                             elif board[row - i][col - i] * turn < 0:
                                 moves.append(((row, col), (row - i, col - i)))
-                                t4 = False
+                                break
                             else:
-                                t4 = False
+                                break
+                        else:
+                            break
     return moves
+
 
 def generate_rook_moves(board, turn):
     moves = []
@@ -476,106 +515,105 @@ def generate_queen_moves(board, turn):
             piece = board[row][col]
             if turn == 1:
                 if piece == 9:
-                    t1 = True
-                    t2 = True
-                    t3 = True
-                    t4 = True
-                    t5 = True
-                    t6 = True
-                    t7 = True
-                    t8 = True
                     for i in range(1, 8):
-                        if row+i <= 7 and col+i <= 7:
-                            if board[row + i][col] <= 0 and t1 == True: # Rook move up
+                        # Rook moves
+                        if row + i <= 7:
+                            if board[row + i][col] <= 0:  # Empty or opponent's piece
                                 moves.append(((row, col), (row + i, col)))
-                            else: t1 = False
-                            if board[row][col + i] <= 0 and t2 == True: # Rook move right
-                                moves.append(((row, col), (row, col + i)))
-                            else: t2 = False
-                            if board[row + i][col + i] <= 0 and t3 == True: # Bishop move up right
+                                if board[row + i][col] < 0:  # Opponent's piece, stop further movement
+                                    break
+                            else:
+                                break  # Own piece blocking the path
+                        # Bishop moves
+                        if row + i <= 7 and col + i <= 7:
+                            if board[row + i][col + i] <= 0:
                                 moves.append(((row, col), (row + i, col + i)))
-                            else: t3 = False
-                        if row+i <= 7 and col-i >= 0:
-                            if board[row + i][col] <= 0 and t4 == True: # Rook move down
-                                moves.append(((row, col), (row + i, col)))
-                            else: t4 = False
-                            if board[row][col - i] <= 0 and t5 == True: # Rook move left
-                                moves.append(((row, col), (row, col - i)))
-                            else: t5 = False
-                            if board[row + i][col - i] <= 0 and t6 == True: # Bishop move up left
+                                if board[row + i][col + i] < 0:
+                                    break
+                            else:
+                                break
+                        if row + i <= 7 and col - i >= 0:
+                            if board[row + i][col - i] <= 0:
                                 moves.append(((row, col), (row + i, col - i)))
-                            else: t6 = False
-                        if row-i >= 0 and col+i <= 7:
-                            if board[row - i][col] <= 0 and t7 == True: # Rook move up
-                                moves.append(((row, col), (row - i, col)))
-                            else: t7 = False
-                            if board[row][col + i] <= 0 and t8 == True: # Rook move right
-                                moves.append(((row, col), (row, col + i)))
-                            else: t8 = False
-                            if board[row - i][col + i] <= 0 and t3 == True: # Bishop move down right
+                                if board[row + i][col - i] < 0:
+                                    break
+                            else:
+                                break
+                        if row - i >= 0 and col + i <= 7:
+                            if board[row - i][col + i] <= 0:
                                 moves.append(((row, col), (row - i, col + i)))
-                            else: t3 = False
-                        if row-i >= 0 and col-i >= 0:
-                            if board[row - i][col] <= 0 and t4 == True: # Rook move down
-                                moves.append(((row, col), (row - i, col)))
-                            else: t4 = False
-                            if board[row][col - i] <= 0 and t5 == True: # Rook move left
-                                moves.append(((row, col), (row, col - i)))
-                            else: t5 = False
-                            if board[row - i][col - i] <= 0 and t6 == True: # Bishop move down left
+                                if board[row - i][col + i] < 0:
+                                    break
+                            else:
+                                break
+                        if row - i >= 0 and col - i >= 0:
+                            if board[row - i][col - i] <= 0:
                                 moves.append(((row, col), (row - i, col - i)))
-                            else: t6 = False
+                                if board[row - i][col - i] < 0:
+                                    break
+                            else:
+                                break
             elif turn == -1:
                 if piece == -9:
-                    t1 = True
-                    t2 = True
-                    t3 = True
-                    t4 = True
-                    t5 = True
-                    t6 = True
-                    t7 = True
-                    t8 = True
                     for i in range(1, 8):
-                        if row+i <= 7 and col+i <= 7:
-                            if board[row + i][col] >= 0 and t1 == True: # Rook move up
+                        # Rook moves
+                        if row + i <= 7:
+                            if board[row + i][col] >= 0:
                                 moves.append(((row, col), (row + i, col)))
-                            else: t1 = False
-                            if board[row][col + i] >= 0 and t2 == True: # Rook move right
+                                if board[row + i][col] > 0:
+                                    break
+                            else:
+                                break
+                        if row - i >= 0:
+                            if board[row - i][col] >= 0:
+                                moves.append(((row, col), (row - i, col)))
+                                if board[row - i][col] > 0:
+                                    break
+                            else:
+                                break
+                        if col + i <= 7:
+                            if board[row][col + i] >= 0:
                                 moves.append(((row, col), (row, col + i)))
-                            else: t2 = False
-                            if board[row + i][col + i] >= 0 and t3 == True: # Bishop move up right
+                                if board[row][col + i] > 0:
+                                    break
+                            else:
+                                break
+                        if col - i >= 0:
+                            if board[row][col - i] >= 0:
+                                moves.append(((row, col), (row, col - i)))
+                                if board[row][col - i] > 0:
+                                    break
+                            else:
+                                break
+                        # Bishop moves
+                        if row + i <= 7 and col + i <= 7:
+                            if board[row + i][col + i] >= 0:
                                 moves.append(((row, col), (row + i, col + i)))
-                            else: t3 = False
-                        if row+i <= 7 and col-i >= 0:
-                            if board[row + i][col] >= 0 and t4 == True: # Rook move down
-                                moves.append(((row, col), (row + i, col)))
-                            else: t4 = False
-                            if board[row][col - i] >= 0 and t5 == True: # Rook move left
-                                moves.append(((row, col), (row, col - i)))
-                            else: t5 = False
-                            if board[row + i][col - i] <= 0 and t6 == True: # Bishop move up left
+                                if board[row + i][col + i] > 0:
+                                    break
+                            else:
+                                break
+                        if row + i <= 7 and col - i >= 0:
+                            if board[row + i][col - i] >= 0:
                                 moves.append(((row, col), (row + i, col - i)))
-                            else: t6 = False
-                        if row-i >= 0 and col+i <= 7:
-                            if board[row - i][col] >= 0 and t7 == True: # Rook move up
-                                moves.append(((row, col), (row - i, col)))
-                            else: t7 = False
-                            if board[row][col + i] >= 0 and t8 == True: # Rook move right
-                                moves.append(((row, col), (row, col + i)))
-                            else: t8 = False
-                            if board[row - i][col + i] >= 0 and t3 == True: # Bishop move down right
+                                if board[row + i][col - i] > 0:
+                                    break
+                            else:
+                                break
+                        if row - i >= 0 and col + i <= 7:
+                            if board[row - i][col + i] >= 0:
                                 moves.append(((row, col), (row - i, col + i)))
-                            else: t3 = False
-                        if row-i >= 0 and col-i >= 0:
-                            if board[row - i][col] >= 0 and t4 == True: # Rook move down
-                                moves.append(((row, col), (row - i, col)))
-                            else: t4 = False
-                            if board[row][col - i] >= 0 and t5 == True: # Rook move left
-                                moves.append(((row, col), (row, col - i)))
-                            else: t5 = False
-                            if board[row - i][col - i] >= 0 and t6 == True: # Bishop move down left
+                                if board[row - i][col + i] > 0:
+                                    break
+                            else:
+                                break
+                        if row - i >= 0 and col - i >= 0:
+                            if board[row - i][col - i] >= 0:
                                 moves.append(((row, col), (row - i, col - i)))
-                            else: t6 = False
+                                if board[row - i][col - i] > 0:
+                                    break
+                            else:
+                                break
 
     return moves
 
@@ -815,10 +853,7 @@ def is_draw(board):
                 piece_counts[piece] = piece_counts.get(piece, 0) + 1
     
     # Determine if there is insufficient material for a checkmate
-    if (
-        len(piece_counts) == 2 and
-        all(count == 1 or count == 2 for count in piece_counts.values())
-    ):
+    if (len(piece_counts) == 2 and all(count == 1 or count == 2 for count in piece_counts.values())):
         return True
     
     # Check for stalemate
@@ -841,15 +876,7 @@ def pawn_promotion(board):
     return board
 
 def move_piece(board, y, x, newy, newx):
-    board[newy][newx] = board[y][x]
-    board[y][x] = 0
-    return board    
-
-board = [[5, 3, 0, float('inf'), 0, 0, 3, 0],
- [0, 0, 0, 1, 0, 0, 0, 5],
- [0, 0, 0, 3.5, 1, 1, 0, 0],
- [1, 0, 0, 0, -1, 0, -3.5, 0],
- [-1, 0, -1, -9, 0, -1, 0, -5],
- [0, 0, 0, 0, 0, 0, 0, -1],
- [0, -1, 0, -1, -3.5, 0, 0, -1],
- [-5, 0, 0, 0, float('-inf'), 0, 0, 0]]
+    new_board = copy.deepcopy(board)
+    new_board[newy][newx] = new_board[y][x]
+    new_board[y][x] = 0
+    return new_board

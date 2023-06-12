@@ -2,7 +2,6 @@ import board_moves
 from board_moves import chessb
 import pprint
 
-
 MINIMAX_DEPTH = 5
 
 # lets start with a very basic eval board function - just get whites pieces subtracted by blacks pieces so player 1 pieces - player 2 pieces 
@@ -34,6 +33,7 @@ def minimax(board, depth, player):
         for i in moves:
             
             child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
+            child = board_moves.pawn_promotion(child)
 
             white_value = minimax(child, depth-1, player*-1)
 
@@ -47,6 +47,8 @@ def minimax(board, depth, player):
         for i in moves:
 
             child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
+            child = board_moves.pawn_promotion(child)
+
             black_value = minimax(child, depth-1, player*-1)
             
 
@@ -64,6 +66,7 @@ def select_best_child(board, player):
     
     for i in moves:
         child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
+        child = board_moves.pawn_promotion(child)
         value = minimax(child, MINIMAX_DEPTH, player)
 
         if value > big_value and player == 1:
@@ -74,9 +77,7 @@ def select_best_child(board, player):
             big_value = value
             big_board = child
 
-
     return big_board
-
 
 turn = 1
 board = board_moves.create_board()
@@ -92,7 +93,7 @@ while True:
 
 # issues:
 '''
--bishops jumpin over peices
-- your not checking for pawn promotion or checkmate
-- checkmate isn't a heuristic for the EVAL board function
+-bishops jumpin over peices: FIXED
+- your not checking for pawn promotion or checkmate: FIXED?
+- checkmate isn't a heuristic for the EVAL board function: 
 '''
