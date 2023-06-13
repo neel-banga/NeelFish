@@ -1,6 +1,6 @@
-import minimax_bot
+import minimax
 import board_moves
-from minimax_bot import chessb
+from board_moves import chessb
 import random
 import board_moves
 
@@ -28,7 +28,7 @@ while True:
     chessb(board)
     
     if turn == -1:
-        board = minimax_bot.select_best_move(board, turn)
+        board = minimax.select_best_move(board, turn)
 
     elif turn == 1:
         moves = board_moves.generate_all_moves(board, turn)
