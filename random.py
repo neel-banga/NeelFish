@@ -2,7 +2,7 @@ import board_moves
 import random
 import time
 import pprint
-from board_moves import chessb
+from minimax_bot import chessb
 
 board = board_moves.create_board()
 
