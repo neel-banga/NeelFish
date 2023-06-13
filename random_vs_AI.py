@@ -13,10 +13,10 @@ while True:
     if board_moves.is_checkmate(board, 1) or board_moves.is_checkmate(board, -1) or board_moves.is_draw(board):
 
         if board_moves.is_checkmate(board, 1):
-            print('White Wins!')
+            print('Black Wins!')
 
         elif board_moves.is_checkmate(board, -1):
-            print('Black Wins')
+            print('White Wins')
 
         else:
             print('Draw')
@@ -27,10 +27,10 @@ while True:
 
     chessb(board)
     
-    if turn == -1:
-        board = minimax.select_best_move(board, turn)
+    if turn == 1:
+        board = minimax.select_best_child(board, turn)
 
-    elif turn == 1:
+    elif turn == -1:
         moves = board_moves.generate_all_moves(board, turn)
         move = random.choice(moves)
         print(move)
