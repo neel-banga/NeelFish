@@ -4,7 +4,7 @@ from random import shuffle
 import time
 
 MAX_TIME = 30
-MINIMAX_DEPTH = 3
+MINIMAX_DEPTH = 2
 
 def set_max_time(x):
     global MAX_TIME
@@ -128,6 +128,43 @@ def minimax(board, depth, player, alpha, beta):
                 break
 
         return score
+    
+
+def minimax_pre_pruning(board, depth, player):
+
+    score = 0
+
+    if depth == 0 or board_moves.is_checkmate(board, player) or board_moves.is_checkmate(board, player*-1) or board_moves.is_draw(board):
+        return eval_board(board)
+    
+    moves = board_moves.generate_all_moves(board, player)
+    reorder_moves(board, moves)
+
+    if player == 1: # then we are maximizing 
+        score = float('-inf')
+        for i in moves:
+            
+            child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
+            child = board_moves.pawn_promotion(child)
+
+            white_value = minimax_pre_pruning(child, depth-1, player*-1)
+
+            score = max(white_value, score)
+
+        return score
+
+    elif player == -1: # then we are minimizing
+        score = float('inf')
+        for i in moves:
+
+            child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
+            child = board_moves.pawn_promotion(child)
+
+            black_value = minimax_pre_pruning(child, depth-1, player*-1)
+
+            score = min(black_value, score)
+
+        return score
 
 def select_best_child(board, player):
 
@@ -140,7 +177,7 @@ def select_best_child(board, player):
     for i in moves:
         child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
         child = board_moves.pawn_promotion(child)
-        value = minimax(child, MINIMAX_DEPTH, player, float('-inf'), float('inf'))
+        value = minimax_pre_pruning(child, MINIMAX_DEPTH, player)#, float('-inf'), float('inf'))
 
         if value > big_value and player == 1:
             big_value = value
@@ -208,7 +245,7 @@ def play_against_user():
 
         turn *= -1
 
-        board = select_best_child(board, turn, MAX_TIME)
+        board = select_best_child(board, turn)
         print('-- The Computer Has Played --')
         chessb(board)
 
@@ -273,3 +310,5 @@ def play_against_itself_time_limit():
         board = select_best_child_time_limit(board, turn)
         chessb(board)
         turn *= -1
+
+play_against_user()

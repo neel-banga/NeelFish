@@ -1,7 +1,7 @@
 import board_moves
 import random
 import sys
-from minimax_bot import chessb
+from board_moves import chessb
 
 board = board_moves.create_board()
 
