@@ -1,10 +1,10 @@
 import board_moves
 from board_moves import chessb
-from random import shuffle
 import time
+from tqdm import tqdm
 
 MAX_TIME = 30
-MINIMAX_DEPTH = 2
+MINIMAX_DEPTH = 4
 
 def set_max_time(x):
     global MAX_TIME
@@ -174,7 +174,7 @@ def select_best_child(board, player):
     moves = board_moves.generate_all_moves(board, player)
     reorder_moves(board, moves) # Instead of just shuffling moves lets check if they contain captures and then re-order moves
     
-    for i in moves:
+    for i in tqdm(moves):
         child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
         child = board_moves.pawn_promotion(child)
         value = minimax_pre_pruning(child, MINIMAX_DEPTH, player)#, float('-inf'), float('inf'))
@@ -197,7 +197,7 @@ def select_best_child_time_limit(board, player, time):
     moves = board_moves.generate_all_moves(board, player)
     reorder_moves(board, moves) # Instead of just shuffling moves lets check if they contain captures and then re-order moves
     
-    for i in moves:
+    for i in tqdm(moves):
         child = board_moves.move_piece(board, i[0][0], i[0][1], i[1][0], i[1][1])
         child = board_moves.pawn_promotion(child)
         value = iterative_deepening(child, player, time)
@@ -223,6 +223,21 @@ def play_against_user():
     values = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
 
     while True:
+
+        if board_moves.is_checkmate(board, turn):
+            if turn == -1:
+                print('CHECKMATE - White Wins!')
+            elif turn == 1:
+                print('CHECKMATE - Black Wins!')
+
+            chessb(board)
+            break
+
+        if board_moves.is_draw(board):
+            print('DRAW')
+            chessb(board)
+            break
+
         while True:
             move = input('Your Move: ').replace(' ', '')
             move1, move2 = move.split(',')
@@ -273,6 +288,22 @@ def play_against_user_time_limit():
     values = {'a': 0, 'b': 1, 'c': 2, 'd': 3, 'e': 4, 'f': 5, 'g': 6, 'h': 7}
 
     while True:
+
+        if board_moves.is_checkmate(board, turn):
+            if turn == -1:
+                print('CHECKMATE - White Wins!')
+            elif turn == 1:
+                print('CHECKMATE - Black Wins!')
+
+            chessb(board)
+            break
+
+        if board_moves.is_draw(board):
+            print('DRAW')
+            chessb(board)
+            break
+
+
         while True:
             move = input('Your Move: ').replace(' ', '')
             move1, move2 = move.split(',')
@@ -310,5 +341,3 @@ def play_against_itself_time_limit():
         board = select_best_child_time_limit(board, turn)
         chessb(board)
         turn *= -1
-
-play_against_user()
